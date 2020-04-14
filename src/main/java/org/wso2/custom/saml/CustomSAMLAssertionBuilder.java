@@ -55,8 +55,9 @@ import java.util.StringTokenizer;
 public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
     private static Log log = LogFactory.getLog(CustomSAMLAssertionBuilder.class);
     private String userAttributeSeparator = IdentityCoreConstants.MULTI_ATTRIBUTE_SEPARATOR_DEFAULT;
-    public static final String USER_STORE_DOMAIN_PREFIX = "wso2.com";
+    public static final String USER_STORE_DOMAIN_PREFIX = "xyz.com";
 
+    // Reverting to 23a187353b7913ce3c00fc8b628ff7e8f30dd953 commit id of carbon-identity.
 
     @Override
     public Assertion buildAssertion(SAMLSSOAuthnReqDTO authReqDTO, DateTime notOnOrAfter, String sessionId) throws IdentityException {
@@ -70,6 +71,7 @@ public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
             Subject subject = new SubjectBuilder().buildObject();
 
             NameID nameId = new NameIDBuilder().buildObject();
+
             nameId.setValue(USER_STORE_DOMAIN_PREFIX + "/" + authReqDTO.getUser().getAuthenticatedSubjectIdentifier());
             if (authReqDTO.getNameIDFormat() != null) {
                 nameId.setFormat(authReqDTO.getNameIDFormat());
@@ -78,7 +80,7 @@ public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
             }
 
             subject.setNameID(nameId);
-            log.info("Name id : " + nameId);
+            log.info("Name Id : " + nameId);
 
             SubjectConfirmation subjectConfirmation = new SubjectConfirmationBuilder()
                     .buildObject();
@@ -247,6 +249,10 @@ public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
             }
         }
 
+        if (samlAssertion.getAuthnStatements().isEmpty()) {
+            samlAssertion.getAuthnStatements().add(getAuthnStatement(authReqDTO, sessionId, AuthnContext
+                    .PASSWORD_AUTHN_CTX, authnInstant, null));
+        }
     }
 
     private AuthnStatement getAuthnStatement(SAMLSSOAuthnReqDTO authReqDTO, String sessionId,
