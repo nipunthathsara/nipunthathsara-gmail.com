@@ -55,7 +55,7 @@ import java.util.StringTokenizer;
 public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
     private static Log log = LogFactory.getLog(CustomSAMLAssertionBuilder.class);
     private String userAttributeSeparator = IdentityCoreConstants.MULTI_ATTRIBUTE_SEPARATOR_DEFAULT;
-    public static final String USER_STORE_DOMAIN_PREFIX = "xyz.com";
+    public static final String USER_STORE_DOMAIN_PREFIX = "HealthUserStore";
 
     // Reverting to 23a187353b7913ce3c00fc8b628ff7e8f30dd953 commit id of carbon-identity.
 
@@ -80,7 +80,7 @@ public class CustomSAMLAssertionBuilder extends DefaultSAMLAssertionBuilder {
             }
 
             subject.setNameID(nameId);
-            log.info("Name Id : " + nameId);
+            log.info("Name Id : " + nameId.getValue());
 
             SubjectConfirmation subjectConfirmation = new SubjectConfirmationBuilder()
                     .buildObject();
